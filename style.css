@@ -4,6 +4,29 @@ body{
     overflow: hidden;
     text-align: center;
 }
+#container{
+    display: flex;
+    justify-content: space-evenly;
+}
 #myCanvas{
     background-color: lightgray;
+}
+#buttons{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 200px;
+    margin: 10px;
+}
+button{
+    width: 120px; 
+    height: 40px; 
+    margin: 4px;
+    border: none; 
+    border-radius: 10%;
+    text-align: center;
+    cursor: pointer;
+    background-color: coral;
+    font-size: 16px;
 }
