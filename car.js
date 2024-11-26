@@ -16,8 +16,8 @@ class Car {
 
     this.damaged = false;
     if (type != "DUMMY") {
-      this.sensor = new Sensor(this, 10);
-      this.brain = new NeuralNetwork([this.sensor.rayCount, 8, 4]);
+      this.sensor = new Sensor(this, 15);
+      this.brain = new NeuralNetwork([this.sensor.rayCount, 20,10, 4]);
     }
     this.controls = new Controls(type);
   }
@@ -34,7 +34,6 @@ class Car {
         e == null ? 0 : 1 - e.offset
       );
       const outputs = NeuralNetwork.feedForward(offsets, this.brain);
-      console.log(outputs);
       if (this.useBrain) {
         this.controls.forward = outputs[0];
         this.controls.left = outputs[1];

@@ -1,49 +1,84 @@
 const canvas = document.getElementById("myCanvas");
 canvas.width = window.innerWidth * 0.5;
-height = window.innerHeight;
+
+const height = window.innerHeight;
+const percentageWidth = 0.16
 
 const ctx = canvas.getContext("2d");
 const road = new Road(canvas.width / 2, canvas.width * 0.9, 3);
-const cars = generateCars(200);
+const cars = generateCars(1000);
+
 
 const traffic = [
   new Car(
     road.getLaneCenter(1),
     -height * 0.2,
-    canvas.width * 0.1,
-    canvas.width * 0.15,
+    canvas.width * percentageWidth,
+    canvas.width * percentageWidth*1.5,
     "DUMMY",
     2
   ),
   new Car(
     road.getLaneCenter(0),
-    -height * 0.7,
-    canvas.width * 0.1,
-    canvas.width * 0.15,
+    -height ,
+    canvas.width * percentageWidth,
+    canvas.width * percentageWidth*1.5,
     "DUMMY",
     2
   ),
   new Car(
     road.getLaneCenter(2),
-    -height * 0.7,
-    canvas.width * 0.1,
-    canvas.width * 0.15,
+    -height ,
+    canvas.width * percentageWidth,
+    canvas.width * percentageWidth*1.5,
     "DUMMY",
     2
   ),
   new Car(
     road.getLaneCenter(2),
-    -height * 1.4,
-    canvas.width * 0.1,
-    canvas.width * 0.15,
+    -height * 1.8,
+    canvas.width * percentageWidth,
+    canvas.width * percentageWidth*1.5,
     "DUMMY",
     2
   ),
   new Car(
     road.getLaneCenter(1),
-    -height * 1.4,
-    canvas.width * 0.1,
-    canvas.width * 0.15,
+    -height * 1.8,
+    canvas.width * percentageWidth,
+    canvas.width * percentageWidth*1.5,
+    "DUMMY",
+    2
+  ),
+  new Car(
+    road.getLaneCenter(0),
+    -height * 2.6,
+    canvas.width * percentageWidth,
+    canvas.width * percentageWidth*1.5,
+    "DUMMY",
+    2
+  ),
+  new Car(
+    road.getLaneCenter(1),
+    -height * 2.6,
+    canvas.width * percentageWidth,
+    canvas.width * percentageWidth*1.5,
+    "DUMMY",
+    2
+  ),
+  new Car(
+    road.getLaneCenter(2),
+    -height * 3.4,
+    canvas.width * percentageWidth,
+    canvas.width * percentageWidth*1.5,
+    "DUMMY",
+    2
+  ),
+  new Car(
+    road.getLaneCenter(1),
+    -height * 3.4,
+    canvas.width * percentageWidth,
+    canvas.width * percentageWidth*1.5,
     "DUMMY",
     2
   ),
@@ -54,7 +89,7 @@ if (localStorage && localStorage.getItem("BestBrain")) {
   for (let i = 0; i < cars.length; i++) {
     cars[i].brain = JSON.parse(localStorage.getItem("BestBrain"));
     if (i != 0) {
-      NeuralNetwork.mutate(cars[i].brain, 0.2);
+      NeuralNetwork.mutate(cars[i].brain, 0.01);
     }
   }
 }
@@ -79,8 +114,8 @@ function generateCars(N) {
       new Car(
         road.getLaneCenter(1),
         150,
-        canvas.width * 0.1,
-        canvas.width * 0.15,
+        canvas.width * percentageWidth,
+        canvas.width * percentageWidth*1.5,
         "AI"
       )
     );
