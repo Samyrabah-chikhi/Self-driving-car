@@ -8,9 +8,11 @@ const ctx = canvas.getContext("2d");
 const road = new Road(canvas.width / 2, canvas.width * 0.9, 3);
 const cars = generateCars(1000);
 
-const individual = new Individual(10, 4);
+const individual = new Individual(2, 2);
 individual.genome.mutateAddNode()
+individual.genome.mutateAddLink()
 console.log(individual.genome)
+individual.brain.test()
 
 const traffic = [
   new Car(

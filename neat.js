@@ -8,7 +8,8 @@ class Node {
   constructor(id, type = TYPES.HIDDEN) {
     this.id = id;
     this.type = type;
-    this.biase = Math.random() * 2 - 1;
+    this.biase = 0 //Math.random() * 2 - 4;
+    this.sum = 0
   }
 }
 
@@ -71,6 +72,9 @@ class Gene {
     }
   }
   addLink(node1, node2) {
+    const exists = this.links.find((link) => link.from.id == node1.id && link.to.id == node2.id )
+    if(exists)
+      return;
     const weight = Math.random() * 8 - 4;
     const link = new Link(node1, node2, weight);
     this.links.push(link);
@@ -127,22 +131,38 @@ class Gene {
 }
 
 class Individual {
-  static bestIndividual = undefined;
   constructor(nbrInput, nbrOutput, nbrLinks = 1) {
     this.genome = new Gene(nbrInput, nbrOutput, 2);
     //We need a directed acyclic graph for the neural network
-    this.brain = new NeuralNetwork([nbrInput, nbrOutput]);
+    this.brain = new GraphNetwork(this.genome);
     this.fitness;
   }
-  evaluate(y) {
-    this.fitness = y;
-    if (bestIndividual == undefined) bestIndividual = this;
-    else {
-      if (bestIndividual.fitness < this.fitness) bestIndividual = this;
-    }
+  update(y) {
+    this.fitness = -y;
   }
 }
 
 class Population {
-  constructor(nbrPopulation, nbrInput, nbrOutput) {}
+  constructor(nbrPopulation, nbrInput, nbrOutput,nbrLinks = 1) {
+    this.individuals = []
+    for(let i = 0 ; i < nbrPopulation ; i++ ){
+      this.individuals.push(new Individual(nbrInput,nbrOutput,nbrLinks))
+    }
+  }
+
+  evaluate(){
+    this.individuals.sort((a, b) => b.fitness - a.fitness);
+  }
+
+  reproduce(){
+    const best = Math.floor(this.individuals.length*0.2);
+    let newPopulation = this.individuals.slice(0,best);
+    const len = this.individuals.length - best;
+    for( let i = 0 ; i < len ; i++){
+      const individual = this.individuals[Math.floor(this.individuals.length*0.5)]
+      newPopulation.push(individual.mutate())
+    }
+    this.individuals = newPopulation
+  }
+
 }

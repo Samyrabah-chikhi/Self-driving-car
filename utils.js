@@ -41,3 +41,13 @@ function polyIntersects(poly1, poly2) {
   }
   return false;
 }
+
+function relu(x) {
+  if (x >= 0) return x;
+  return 0;
+}
+
+function sigmoid(x) {
+  return 1 / (1 + Math.exp(-x));
+}
+
