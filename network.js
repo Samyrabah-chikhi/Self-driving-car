@@ -88,8 +88,8 @@ class GraphNetwork {
   test() {
     // Works
     console.log("Topology: ", this.#TopologySorting());
-    console.log("output: ", this.#output());
-    this.feedForward([1, 1]);
+    console.log("output: ", this.#output(this.nodes));
+    console.log("feedforward: ", this.feedForward([1, 1]));
   }
   feedForward(inputs = []) {
     const order = this.#TopologySorting();
@@ -121,10 +121,11 @@ class GraphNetwork {
         }
       });
     }
+    return this.#output(order)
   }
   #calculate_sum(link, node) {}
-  #output() {
-    const outputs = [...this.nodes].filter(
+  #output(nodes) {
+    const outputs = [...nodes].filter(
       (node) => node.type === TYPES.OUTPUT
     );
     return outputs;

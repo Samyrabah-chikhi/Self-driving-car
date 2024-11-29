@@ -8,8 +8,8 @@ class Node {
   constructor(id, type = TYPES.HIDDEN) {
     this.id = id;
     this.type = type;
-    this.biase = 0 //Math.random() * 2 - 4;
-    this.sum = 0
+    this.biase = Math.random() * 2 - 4;
+    this.sum = 0;
   }
 }
 
@@ -72,16 +72,17 @@ class Gene {
     }
   }
   addLink(node1, node2) {
-    const exists = this.links.find((link) => link.from.id == node1.id && link.to.id == node2.id )
-    if(exists)
-      return;
+    const exists = this.links.find(
+      (link) => link.from.id == node1.id && link.to.id == node2.id
+    );
+    if (exists) return;
     const weight = Math.random() * 8 - 4;
     const link = new Link(node1, node2, weight);
     this.links.push(link);
   }
   mutate() {
     let rate = Math.random();
-    if (rate < 0.1) this.mutateWeight();
+    if (rate < 0.05) this.mutateWeight();
     rate = Math.random();
     if (rate < 0.05) this.mutateDisableLink();
     rate = Math.random();
@@ -132,7 +133,7 @@ class Gene {
 
 class Individual {
   constructor(nbrInput, nbrOutput, nbrLinks = 1) {
-    this.genome = new Gene(nbrInput, nbrOutput, 2);
+    this.genome = new Gene(nbrInput, nbrOutput, nbrLinks);
     //We need a directed acyclic graph for the neural network
     this.brain = new GraphNetwork(this.genome);
     this.fitness;
@@ -141,28 +142,57 @@ class Individual {
     this.fitness = -y;
   }
 }
-
+const amount = 0.2;
 class Population {
-  constructor(nbrPopulation, nbrInput, nbrOutput,nbrLinks = 1) {
-    this.individuals = []
-    for(let i = 0 ; i < nbrPopulation ; i++ ){
-      this.individuals.push(new Individual(nbrInput,nbrOutput,nbrLinks))
+  constructor(nbrPopulation, nbrInput, nbrOutput, nbrLinks = 1) {
+    this.individuals = [];
+    for (let i = 0; i < nbrPopulation; i++) {
+      this.individuals.push(new Individual(nbrInput, nbrOutput, nbrLinks));
     }
   }
 
-  evaluate(){
+  evaluate() {
     this.individuals.sort((a, b) => b.fitness - a.fitness);
   }
 
-  reproduce(){
-    const best = Math.floor(this.individuals.length*0.2);
-    let newPopulation = this.individuals.slice(0,best);
-    const len = this.individuals.length - best;
-    for( let i = 0 ; i < len ; i++){
-      const individual = this.individuals[Math.floor(this.individuals.length*0.5)]
-      newPopulation.push(individual.mutate())
-    }
-    this.individuals = newPopulation
+  static crossover(individual1, individual2) {
+    const links1 = individual1.genome.links;
+    const links2 = individual2.genome.links;
+    const newIndividual = new Individual(
+      individual1.genome.nbrInput,
+      individual1.genome.nbrOutput,
+      0
+    );
+    console.log(newIndividual)
+    links1.forEach((link) => {
+      const exists = links2.find(
+        (e) => e.to.id == link.to.id && e.from.id == link.from.id
+      );
+      console.log(exists)
+      if (exists && Math.random() > 0.5) {
+        newIndividual.genome.links.push(exists);
+      } else {
+        newIndividual.genome.links.push(link);
+      }
+    });
+    return newIndividual;
   }
 
+  selection() {
+    const best = Math.floor(this.individuals.length * amount);
+    let newPopulation = this.individuals.slice(0, best);
+    const len = this.individuals.length - best;
+    for (let i = 0; i < len; i++) {
+      const individual1 =
+        this.individuals[
+          Math.floor(Math.random() * this.individuals.length * amount)
+        ];
+      const individual2 =
+        this.individuals[
+          Math.floor(Math.random() * this.individuals.length * 0.5)
+        ];
+      newPopulation.push(this.crossover(individual1,individual2));
+    }
+    this.individuals = newPopulation;
+  }
 }
